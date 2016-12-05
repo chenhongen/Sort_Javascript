@@ -1,0 +1,149 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title> 选择排序 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="selectionSort(0)">Click Me!</button>
+	</div>
+  </progress>
+
+ <script type="text/javascript">
+	var arr = [6,2,7,1,8,3];//[1,8,9,4,5,2,10,3,6,7];//
+	var len = arr.length;
+	console.log("swap:"+arr);
+
+	$(function() {
+		// 批量创建进度条
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+	});
+
+  function selectionSort(i) {
+    var dfd = $.Deferred();
+
+    if(i < len - 1) {
+			var j = selectMinKey(i);	//选出第i个元素后面的最小元素对应的下标
+			if(i != j){	//如果最小的不是第i个，则将其与第i个交换位置
+				swap1(dfd, i, j);
+        console.log(arr);
+			} else {
+        dfd.resolve();
+      }
+		} else {
+      console.log(arr);
+    }
+
+    dfd.then(function() {
+      i++;
+      selectionSort(i)
+    });
+  }
+
+  /**
+	 * 选出从指定位置开始到数组结束的最小值，并返回其下标
+	 * @param start开始下标
+	 * @return 返回最小值对应的下标
+	 */
+  function selectMinKey(start) {
+    var j = start;	//用来保存比较时较小的下标,开始时就是开始位置
+    for(var i = start; i <len; i++){
+      if(arr[j] >= arr[i]) {
+        j = i;
+      }
+    }
+    return j;	//返回最小值对应的下标
+  }
+
+	// 测试用
+	function swap(def, a, b) {
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+
+		setTimeout(function() {
+			//console.log("swap:"+a+"---"+b);
+			def.resolve();
+		}, 500);
+	}
+
+	// 交换
+	function swap1(def, a, b) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			temp,
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+		progress_b.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				progress_b_val = progress_b_val + symbol;
+				progress_b.val(progress_b_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				progress_b.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},300);
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 10,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+
+ </script>
+ </body>
+</html>

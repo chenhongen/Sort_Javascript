@@ -1,0 +1,217 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title> 归并排序 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="mergeSort(1)">Click Me!</button>
+	</div>
+  </progress>
+
+ <script type="text/javascript">
+	var arr = [1,8,5,6,3,9];//[10,80,90,40,50,20,100,30,60,70];//
+	var len = arr.length;
+	console.log("swap:"+arr);
+
+	$(function() {
+		// 批量创建进度条
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+	});
+
+	//
+	function mergeSort(gap) {
+		var d = $.Deferred();
+
+		// 分解后子表长度
+		mergePass(d, gap, 0);
+
+		d.then(function() {
+			gap = gap * 2;
+			if(gap < len) {
+				mergeSort(gap);
+			} else {
+				console.log(arr);
+			}
+		});
+	}
+
+	// 
+	function mergePass(d, gap, i) {
+		var dfd = $.Deferred();
+		var dfd1 = $.Deferred();
+console.log("-----------gap:"+gap);
+		// 归并gap长度的两个相邻子表
+		if(i + 2 * gap < len) {
+			merge(dfd, i, i + gap, i + 2 * gap);
+		} else {
+			dfd1.resolve();
+		}
+
+		dfd.then(function() {
+			i = i + 2 * gap;
+
+			if(i + 2 * gap < len) {
+				mergePass(d, gap, i);
+			} else {
+				dfd1.resolve();
+			}
+		});
+
+		dfd1.then(function() {
+			// 余下两个子表，前者合并过后，后者长度小于gap，将这两者归并
+			if (i + gap < len) {
+				merge(d, i, i + gap, len);
+			} else {
+				d.resolve();
+			}
+		});
+	    
+	}
+
+	//	
+	function merge(dfd, low, mid, high) {
+		var def = $.Deferred();
+
+		var c = new Array(high - low);
+		var j = low; // 第一组下标
+		var k = mid; // 第二组下标
+		var i = 0;
+		
+console.log("low:"+low+" mid:"+mid+' high:'+high);
+
+		// 两组中较小的给c
+		while(j < mid && k < high) {
+			if(arr[j] < arr[k]) {
+				c[i] = arr[j];
+				j++;
+			} else {
+				c[i] = arr[k];
+				k++;
+			}
+			i++;
+		}
+		// 剩下的全给c
+		while(j < mid) {
+			c[i] = arr[j];
+			j++;
+			i++;
+		}
+		
+		// 剩下的全给c
+		while(k < high) {
+			c[i] = arr[k];
+			k++;
+			i++;
+		}
+		
+		// 将合并序列复制到原始序列中
+		if(j < high) {
+			delay(def, 0, low, high, c);
+		} else {
+			def.resolve();
+		}
+		
+		def.then(function() {
+			console.log(arr);
+			dfd.resolve();
+		});
+	}
+
+	// 
+	function delay(def, i, j, high, c) {
+		var def1 = $.Deferred();
+console.log("c:"+c+" j:"+j+" i:"+i);
+		back1(def1, j, c[i]);
+
+		def1.then(function() {
+			j++;
+			i++;
+			if(j < high) {
+				delay(def, i, j, high, c)
+			} else {
+				def.resolve();
+			}
+		});
+	}
+
+	// 将大于temp的值整体后移一个单位
+	function back(def, i, temp) {
+		arr[i] = temp;
+
+		setTimeout(function() {
+		  //console.log("swap:"+a+"---"+b);
+		  def.resolve();
+		}, 500);
+	}
+
+	// 
+	function back1(def, a, temp) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = temp - arr[a];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		arr[a] = temp;
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val + symbol;
+				progress_a.val(progress_a_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},500);
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 10,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+
+ </script>
+ </body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title> 快速排序 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="startQS()">Click Me!</button>
+	</div>
+  </progress>
+ 
+ <script type="text/javascript">
+	var arr = [1,8,9,4,5,2,10,3,6,7];//[6,2,7,1,8,3];//
+	var len = arr.length;
+	console.log("swap:"+arr);
+
+	$(function() {
+		// 批量创建进度条
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+	});
+
+	// 启动快速排序
+	function startQS() {
+		// 初始 begin：0，end：数组长度
+		quickSort(0, len);
+	}
+
+	// 递归
+	function quickSort(p_begin, p_end) {
+		var dfd = $.Deferred();
+		
+		// 第N个数进行一趟快速排序
+		delay1(dfd, p_begin, p_end, p_begin);
+
+		// 第N个数排序 后，其下标即为最终数组正确顺序时的下标
+		// 分别递归对该下标两端剩余数组进行 快速排序
+		dfd.then(function( index ) {
+			console.log(arr);
+			if ( p_begin < index - 1 ) {
+				quickSort(p_begin, index - 1);
+			}/**/
+			if( index < p_end - 1) {
+				quickSort(index + 1, p_end);
+			}
+		});
+	}
+
+	// 
+	function delay1(dfd, begin, end, index) {
+		var def = $.Deferred();
+			def2 = $.Deferred();
+
+		console.log("b="+begin+ "  i="+index+"  e=" + end);
+
+		// 同尾数比较（尾数比较的循环通过递归本函数维持）
+		if(arr[index] > arr[end]) {
+			swap1(def, end, index); // 需要时间的交换
+			console.log("tail swap:"+arr);
+			if(index == begin) { // 基数下标更新
+				index = end;
+			} else {
+				index = begin;
+			}
+			begin++;
+		} else {
+			end--;
+			def2.resolve();
+		}
+
+		// 同首数比较（首数比较的循环通过递归compareEnd函数维持）
+		def.then(function() {
+			compareEnd(def2, dfd, begin, end, index)
+		});
+
+		// 首数比较递归结束 或者 尾数比较交换结束 递归本函数
+		// 直到 首尾相邻 触发下个数进行快速排序
+		def2.done(function() {
+			//console.log("--i:"+i+" j:"+j);
+			if(begin < end) {
+				delay1(dfd, begin, end, index);
+			} else {
+				dfd.resolve(index);
+			}
+		});
+
+		// 共用def2, dfd, begin, end, index
+		var compareEnd = function() {
+			//console.log(begin);
+			if(arr[index] < arr[begin]) {
+				swap1(def2, begin, index);
+				console.log("head swap:"+arr);
+				if(index == begin) {
+					index = end;
+				} else {
+					index = begin;
+				}
+				end--;
+			} else {
+				begin++;
+				if(begin < end) {
+					compareEnd(def2, dfd, begin, end, index);
+				} else {
+					delay1(dfd, begin, end, index);
+				}
+			}
+		}
+	}
+
+	// 测试用
+	function swap(def, a, b) {
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+
+		setTimeout(function() {
+			//console.log("swap:"+a+"---"+b);
+			def.resolve();
+		}, 500);
+	}
+
+	// 交换
+	function swap1(def, a, b) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			temp,
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+		progress_b.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+		
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				progress_b_val = progress_b_val + symbol;
+				progress_b.val(progress_b_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				progress_b.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},300);
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 10,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');	
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+	
+ </script>
+ </body>
+</html>

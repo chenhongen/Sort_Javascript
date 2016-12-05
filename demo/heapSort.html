@@ -1,0 +1,283 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title> 堆排序 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="startHS()">Click Me!</button>
+	</div>
+  </progress>
+
+ <script type="text/javascript">
+	var arr = [1,8,9,4,5,2,10,3,6,7];//[1,4,2,3,0,9];//
+	var len = arr.length;
+	console.log("swap:"+arr);
+
+	$(function() {
+		// 批量创建进度条
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+	});
+
+
+	function startHS() {
+		var d = $.Deferred();
+
+		makeMaxHeap(d, parseInt(len/2) - 1);
+		
+		d.then(function() {
+			console.log(arr);
+			maxheapSortToDescendArray(len - 1);
+		});
+	}
+
+	// 生成小顶堆，从第n/2 - 1个元素开始，因为叶子元素已是合法的堆了
+	function makeMaxHeap(d, i) {
+		var dfd = $.Deferred();
+		console.log("i:"+i +"  temp:" + arr[i]);
+		maxHeapFixdown(dfd, i, arr[i], len);
+
+		dfd.then(function() {
+			i--;
+			if(i >= 0) {
+				makeMaxHeap(d, i);
+			} else {
+				d.resolve();
+			}
+		});
+	}
+
+	// 
+	function maxHeapFixdown(dfd, i, temp, n) {
+		var j = 2 * i + 1;//左儿子
+		var def = $.Deferred();
+		var flag = true;
+		//console.log("i:"+i +"  j:" + j);
+		if(j < n) {
+			if (j + 1 < n && arr[j] < arr[j + 1]) {//选出两个孩子中较大的孩子
+				j++; // 表示：右儿子比较大
+			}
+			if (arr[j] <= temp) {
+				flag = false;
+				def.resolve();
+			} else {
+				//arr[i] = arr[j]; //把较大的子结点往上移动,替换它的父结点  
+				back1(def, i, j);
+			}
+		} else {
+			flag = false;
+			def.resolve();
+		}
+
+		def.then(function() {
+			if (flag && j < n) {
+				i = j;
+				maxHeapFixdown(dfd, i, temp, n);
+			} else {
+				back2(dfd, i, temp);
+			}
+		});
+	}
+
+	//堆排序，大顶堆，排序形成的是降序的数组，过程就是交换第一个和最后一个元素，每次数组长度减少1
+	//即，把顶部最大的元素移动到了数组末尾
+	function maxheapSortToDescendArray(j) {
+		var def = $.Deferred();
+		var def1 = $.Deferred();
+
+		swap1(def, 0, j);
+
+		def.then(function() {
+			maxHeapFixdown(def1, 0, arr[0], j);
+		});
+
+		def1.then(function() {
+			j--;
+			if(j >= 0) {
+				maxheapSortToDescendArray(j);
+			} else {
+				console.log(arr);
+			}
+		});
+	}
+
+	// 将大于temp的值整体后移一个单位
+	function back(def, i, j) {
+		arr[i] = arr[j];
+
+		setTimeout(function() {
+		  //console.log("swap:"+a+"---"+b);
+		  def.resolve();
+		}, 100);
+	}
+
+	// 测试用
+	function swap(def, a, b) {
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+
+		setTimeout(function() {
+			console.log("swap:"+a+"---"+b);
+			def.resolve();
+		}, 100);
+	}
+
+	// 根据下标，将[b]赋值给[a]
+	function back1(def, a, b) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		arr[a] = arr[b];
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},100);
+	}
+
+	// 将temp复制给[a]
+	function back2(def, a, temp) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = temp - arr[a];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		arr[a] = temp;
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val + symbol;
+				progress_a.val(progress_a_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},100);
+	}
+
+	// 交换
+	function swap1(def, a, b) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			temp,
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+		progress_b.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+		
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				progress_b_val = progress_b_val + symbol;
+				progress_b.val(progress_b_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				progress_b.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},1000);
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 10,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+
+ </script>
+ </body>
+</html>

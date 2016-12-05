@@ -1,0 +1,168 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title> 冒泡排序 </title>
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="bubbleSort(0)">Click Me!</button>
+	</div>
+  </progress>
+ </body>
+
+ <script>
+	var filterResolve = function() {
+	  var defer = $.Deferred(),
+		  filtered = defer.then(function( value ) {
+		    console.log("in");
+			return value * 2;
+		  });
+	 
+	  defer.resolve( 5 ); // 放行
+	  filtered.done(function( value ) {
+		console.log( "Value is ( 2*5 = ) 10: " + value );
+	  });
+	};
+
+	var arr = [1,8,9,4,5,2,10,3,6,7];//[2,1,8,3];//
+	var len = arr.length;
+
+	$(function() {
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+
+	});
+
+	// 冒泡排序
+	// 外层循环：递归
+	function bubbleSort(i) {
+		var j = 0;
+		var dfd = $.Deferred();
+
+		delay(dfd, i, j);
+
+		// 内层循环结束后；递归
+		dfd.then(function( i, j ) {
+			console.log(i+ " - " + j);
+			if(i < len) {
+				i++;
+				bubbleSort(i);
+			} else {
+				console.log(arr);
+				return;
+			}
+		});
+	}
+
+	// 内层循环：需耗时
+	function delay(dfd, i, j){
+		var def = $.Deferred();
+		console.log("i:"+i+" j:"+j);//console.log("xxxx"+j);
+
+		if(arr[j] < arr[j + 1]) {
+			swap1(def, j, j + 1);
+		} else {
+			def.resolve();
+		}
+
+		def.then(function() {
+			j++;
+			//console.log("--i:"+i+" j:"+j);
+			if(j < len - i - 1) {
+				delay(dfd, i, j);
+			} else {
+				dfd.resolve(i, j);
+			}
+		});
+	};
+
+	function swap(def, a, b) {
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+
+		setTimeout(function() {
+			console.log("swap");
+			def.resolve();
+		}, 1000);
+	}
+
+	// 交换
+	function swap1(def, a, b) {
+		//var def = $.Deferred();
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			temp,
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+		progress_b.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		temp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = temp;
+		
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				progress_b_val = progress_b_val + symbol;
+				progress_b.val(progress_b_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				progress_b.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},60);
+
+		//return def.promise();
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 10,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');	
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+	
+ </script>
+</html>

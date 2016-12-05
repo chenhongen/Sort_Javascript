@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>fullPage</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+	
+	<div id="container">
+
+		<div class="page page1 current">
+			
+			<div class="contain">
+				<div class="progress-sort">
+					<div id="contain_bubble">
+						<a class="start_btn" href="#" onclick="bubbleSort(0)">click me</a>
+						<br><br>
+						
+					</div>	
+				</div>
+				<div class="contain_left">
+					<div class="contain_text">
+						<div id="text_bubble">
+						
+						<br><br>
+						xx<br>
+						xx<br>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="page page2">
+			<div class="progress-sort">
+				<div id="contain_">
+				xx
+				</div>	
+			</div>
+			<div class="contain_left">
+				<div class="contain_text">
+					<div id="text_bubble">
+					bb<br>
+					xx<br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+  <ul id="navBar">
+		<li><span class="li_title"> 冒泡排序</span></li>
+		<li><span class="li_title"> 插入排序</span></li>
+		<li><span class="li_title"> 快速排序</span></li>
+		<li><span class="li_title"> 选择排序</span></li>
+		<li><span class="li_title"> 合并排序</span></li>
+		<li><span class="li_title"> 基数排序</span></li>
+		<li><span class="li_title"> 堆排序</span></li>
+		<li><span class="li_title"> 希尔排序</span></li>
+  </ul>
+
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+  <script type="text/javascript" src="js/fullPage.js"></script>
+  <script type="text/javascript" src="js/progressSort.js"></script>
+  <script type="text/javascript">
+    // 全屏滚动设置
+    var runPage,
+        array = [1,2,3,4,5,6,7,8,10,9],
+        len = array.length;
+
+    runPage = new FullPage({
+
+      id : 'container',                            // id of contain
+      slideTime : 800,                               // time of slide
+      continuous : false,                            // create an infinite feel with no endpoints
+      effect : {                                     // slide effect
+              transform : {
+                translate : 'Y',				   // 'X'|'Y'|'XY'|'none'
+                scale : [.1, 1],				   // [scalefrom, scaleto]
+                rotate : [0, 0]				       // [rotatefrom, rotateto]
+              },
+              opacity : [0, 1]                       // [opacityfrom, opacityto]
+          },
+      mode : 'wheel,touch,nav:navBar',               // mode of fullpage
+        start : 0,                                     // which page will display when install
+      easing : 'ease'                                // easing('ease','ease-in','ease-in-out' or use cubic-bezier like [.33, 1.81, 1, 1];
+        //  ,onSwipeStart : function(index, thisPage) {   // callback before pageChange
+        //    return 'stop';
+        //  }
+        //  ,beforeChange : function(index, thisPage) {   // callback before pageChange
+        //    return 'stop';
+        //  }
+        //  ,callback : function(index, thisPage) {       // callback when pageChange
+        //    alert(index);
+        //  };
+    });
+
+    $.each(array, function(index, value) {
+		// 冒泡排序进度条群创建
+		createProgress('contain_bubble', index, value, 10);
+
+	});
+
+	// 冒泡排序
+	function bubbleSort(i) {
+		var j = 0;
+		var dfd = $.Deferred();
+
+		bubbleDelay(dfd, i, j);
+
+		// 内层循环结束后；递归
+		dfd.then(function( i, j ) {
+			console.log(i+ " - " + j);
+			if(i < len) {
+				i++;
+				bubbleSort(i);
+			} else {
+				console.log(array);
+				return;
+			}
+		});
+	}
+
+	function bubbleDelay(dfd, i, j) {
+		var def = $.Deferred();
+		console.log("i:"+i+" j:"+j);//console.log("xxxx"+j);
+
+		if(array[j] < array[j + 1]) {
+			swap(def, j, j + 1);
+		} else {
+			def.resolve();
+		}
+
+		def.then(function() {
+			j++;
+			//console.log("--i:"+i+" j:"+j);
+			if(j < len - i - 1) {
+				bubbleDelay(dfd, i, j);
+			} else {
+				dfd.resolve(i, j);
+			}
+		});
+	}
+  </script>
+</body>
+</html>

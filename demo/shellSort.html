@@ -1,0 +1,238 @@
+<!DOCTYPE>
+<html>
+ <head>
+  <title>  希尔排序 </title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+ </head>
+
+ <body>
+	<div id="container">
+	</div>
+	<div id="btns">
+		<button type="button" onclick="starSS()">Click Me!</button>
+	</div>
+  </progress>
+
+ <script type="text/javascript">
+	var arr = [10,80,90,40,50,20,100,30,60,70];//[70,30,40,10,80];//
+	var len = arr.length;
+	console.log("swap:"+arr);
+
+	$(function() {
+		// 批量创建进度条
+		$.each(arr, function(index, value) {
+			createProgress(index, value);
+		});
+	});
+
+	//
+	function starSS() {
+		var incre = 1;
+
+		// 获取最大增量
+		while(incre * 3 + 1 < len) {
+			incre = incre * 3 + 1;
+		}
+
+		shellSort(incre);
+	}
+
+	//
+	function shellSort(incre) {
+		var d = $.Deferred();
+		
+		// 起始点后移，直到第二个 增量 前
+		moveIndex(d, incre, 0);
+
+		d.then(function(j) {
+			incre = parseInt((incre - 1) / 3);
+			if(incre > 0) {
+				shellSort(incre);
+			}
+		});
+	}
+
+	// 
+	function moveIndex(d, incre, k) {
+		var dfd = $.Deferred();
+		var i = incre + k;
+
+		if(i < len) {
+			insertSort(dfd, incre, i);
+		} else {
+			dfd.resolve();
+		}
+
+		dfd.then(function(j) {
+			k++;
+			if(k < incre) {
+				moveIndex(d, incre, k);
+			} else {
+				d.resolve();
+			}
+		});
+	}
+
+	// 增量间隔相同数组成数组 进行 直接插入排序
+	function insertSort(dfd, incre, i) {
+		var d1 = $.Deferred();
+		var d2 = $.Deferred();
+		var temp = arr[i]; // 存放被比较值（因为会被数组后移覆盖）
+
+		console.log("增量："+i+"-"+arr[i]+ "-"+arr[i-incre]);
+
+		var j = i - incre; // 假设当前下标之前数组已为有序数组
+		delay(d1, j, temp, incre); // 第 i-incre 整体后移
+		
+		d1.then(function(j) {
+			back2(d2, j + incre, temp); // 补上最后一次j--的1，即，将temp放到a[j]
+		});
+
+		// 递归循环
+		d2.then(function(j) {
+			console.log(arr);
+			i += incre;
+			if(i < len) {
+				insertSort(dfd, incre, i);
+			} else {
+				//console.log(arr);
+				dfd.resolve();
+			}
+		});
+	}
+
+	function delay(dfd, j, temp, incre) {
+		var def = $.Deferred();
+		console.log("temp:"+temp+" arr[j]:"+arr[j]+" j:"+j + " incre:"+incre);
+		
+		if(temp < arr[j]){        // temp与a[j]比较
+			back1(def, j + incre, j);
+		} else {
+			dfd.resolve(j);
+		}
+
+		def.then(function() {
+		//console.log(arr);
+			j -= incre;
+			if(j >= 0 && temp < arr[j]) {
+				delay(dfd, j, temp, incre);
+			} else {
+				dfd.resolve(j);
+			}
+		});
+	}
+
+	// 将大于temp的值整体后移一个单位
+	function back(def, i, j) {
+		arr[i] = arr[j];
+
+		setTimeout(function() {
+		  //console.log("swap:"+a+"---"+b);
+		  def.resolve();
+		}, 500);
+	}
+
+    // 交换
+	function back1(def, a, b) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			progress_b = $("#p_" + b),
+			progress_b_val = progress_b.val(),
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = arr[a] - arr[b];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		arr[a] = arr[b];
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val - symbol;
+				progress_a.val(progress_a_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},30);
+	}
+
+	// 交换
+	function back2(def, a, temp) {
+		//console.log(def);
+		var progress_a = $("#p_" + a),
+			progress_a_val =  progress_a.val(),
+			symbol = 1;
+
+		// 颜色标识
+		progress_a.removeClass('progress-sel');
+
+		// 差值计算，确定正负
+		var difference = temp - arr[a];
+		var diff_abs = Math.abs(difference);
+
+		if(difference == 0) {
+			def.resolve();
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 实际数交换
+		arr[a] = temp;
+
+		// 渐变显示值交换
+		var interval_id = setInterval(function(){
+			if(0 < diff_abs) {
+				progress_a_val = progress_a_val + symbol;
+				progress_a.val(progress_a_val);
+				diff_abs--;
+			} else {
+				progress_a.addClass('progress-sel');
+				clearInterval(interval_id);
+				def.resolve();
+			}
+		},30);
+	}
+
+	function createProgress(index, val) {
+		$('<progress>').attr({
+			value: val,
+			max: 100,
+			id: 'p_'+index
+		}).css({
+			position: 'absolute',
+			height: '20px',
+			width: '200px',
+			top: 100 + index*20 + 'px'
+		}).addClass('progress-sel').appendTo('#container');
+	}
+
+	// 输出对象键值对
+    function po(obj){
+        var temp = "";
+        for(var i in obj){//用javascript的for/in循环遍历对象的属性
+            temp += i+":"+obj[i]+"\n";
+        }
+        alert(temp);
+    }
+
+ </script>
+ </body>
+</html>

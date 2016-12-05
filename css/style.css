@@ -1,0 +1,145 @@
+body {
+  width: 100%;
+  *cursor: default;
+  overflow: hidden;
+}
+#container {
+  overflow: hidden;
+}
+.page {
+	display: none;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.contain {
+	width: 100%;
+	height: 100%;
+	display: none;
+	position: relative;
+	z-index: 0;
+}
+.current .contain,.slide .contain {
+	display: block;
+}
+.current {
+	display: block;
+	z-index: 1;
+}
+
+
+/* 左右内容 */
+.progress-sort {
+	width: 40%;
+	height: 100%;
+	background: #ccc;
+	text-align: center;
+	display: table;
+}
+.progress-sort #contain_bubble {
+	display: table-cell;
+    vertical-align: middle;
+}
+
+.contain_left {
+	width: 60%;
+	height: 100%;
+	text-align: center;
+	/*left: 0;float: right;*/
+	background: #999;
+	position: absolute;top: 0;right: 0;
+	display: table;
+}
+.contain_left .contain_text {
+	display: table-cell;/**/
+    vertical-align: middle;
+}
+
+.contain_left .contain_text div {
+	height: 300px;
+	overflow: hidden;
+}
+
+/* 导航按钮 */
+#navBar {
+	z-index: 3;
+	position: absolute;
+	top: 25%;
+	right: 3%;
+}
+
+#navBar li:focus {
+    outline: medium none;
+}
+
+#navBar li {
+	background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 0 none;
+    color: currentcolor;
+    display: block;
+    letter-spacing: 0;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    height: 1.25em;
+    margin: 0.5em 0;
+    width: 6em;
+}
+#navBar li::after {
+    background: #3c4a9a none repeat scroll 0 0;
+    content: "";
+    height: 30%;
+    left: 0;
+    position: absolute;
+    top: 35%;
+    transform-origin: 0 0 0;
+    transition-delay: 0s, 0s;
+    transition-duration: 0.5s, 0.5s;
+    transition-property: transform, background-color;
+    transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+    width: 100%;
+}
+#navBar li:hover:not(.active)::after, #navBar li:focus:not(.active)::after {
+    background: #212956 none repeat scroll 0 0;
+    transition: background-color 0.3s ease 0s;
+}
+#navBar .active::after {
+    background: #212956 none repeat scroll 0 0;
+    transform: scale3d(0.2, 1, 1);
+}
+#navBar .li_title {
+    display: block;
+    margin: 0 0 0 1.5em;
+    opacity: 0;
+    transform: translate3d(2.5em, 0px, 0px);
+    transition-delay: 0s, 0s;
+    transition-duration: 0.5s, 0.5s;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.7, 0, 0.3, 1);
+}
+#navBar .active .li_title {
+    opacity: 1;
+    transform: translate3d(0px, 0px, 0px);
+    transition-delay: 0.1s;
+}
+
+/* 按钮 */
+.start_btn {
+	height: 100%;
+	line-height: 21px;
+	padding: 0 11px;
+	background: #02bafa;
+	border: 1px #26bbdb solid;
+	border-radius: 3px;
+	/*color: #fff;
+	display: inline-block;*/
+	text-decoration: none;
+	font-size: 12px;
+}
+.start_btn:link,.start_btn:visited,.start_btn:hover,.start_btn:active {
+	color: white;
+}
