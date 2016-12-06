@@ -21,13 +21,8 @@
 					</div>	
 				</div>
 				<div class="contain_left">
-					<div class="contain_text">
-						<div id="text_bubble">
-						
-						<br><br>
-						xx<br>
-						xx<br>
-						</div>
+					<div class="contain_text" id="tm_bubble">
+						<div id="text_bubble"></div>
 					</div>
 				</div>
 			</div>
@@ -42,8 +37,6 @@
 			<div class="contain_left">
 				<div class="contain_text">
 					<div id="text_bubble">
-					bb<br>
-					xx<br>
 					</div>
 				</div>
 			</div>
@@ -125,9 +118,12 @@
 
 	function bubbleDelay(dfd, i, j) {
 		var def = $.Deferred();
-		console.log("i:"+i+" j:"+j);//console.log("xxxx"+j);
+		//console.log("i:"+i+" j:"+j);
 
 		if(array[j] < array[j + 1]) {
+			var text = "a[" + j + "] 与 a[" + (j + 1) + "]交换~";
+			tm(text, "tm_bubble");
+			$("#text_bubble").html(text+"<br>"+$("#text_bubble").html());
 			swap(def, j, j + 1);
 		} else {
 			def.resolve();
@@ -143,6 +139,24 @@
 			}
 		});
 	}
+
+	var arrColor = ['#32CD32','#556B2F','#808000','#7CFC00','#00FF00','#32CD32','#3CB371','#00FA9A','#228B22','#20B2AA','#2E8B57'];
+
+	// 弹幕
+	function tm(text, pid) {
+		var temp =  $("<span class=\"tm\">"+text+"</span>").appendTo($("#"+pid));
+		temp.css({
+			'color': arrColor[parseInt(10*Math.random())],
+			'top': 100*Math.random()*Math.random() + '%'
+		}).animate({'left':'40%'},10000,function () {
+			temp.fadeOut(500);
+			//$('#tm_01').css('left','100%');
+		});
+
+		
+	}
+	
+	
   </script>
 </body>
 </html>

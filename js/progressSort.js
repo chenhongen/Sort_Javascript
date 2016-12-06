@@ -108,7 +108,7 @@
 				clearInterval(interval_id);
 				def.resolve();
 			}
-		},100);
+		},300);
 	}
 
 	// 输出对象键值对
