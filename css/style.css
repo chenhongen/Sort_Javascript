@@ -1,3 +1,4 @@
+/* fullpage css */
 body {
   width: 100%;
   *cursor: default;
@@ -28,40 +29,6 @@ body {
 .current {
 	display: block;
 	z-index: 1;
-}
-
-
-/* 左右内容 */
-.progress-sort {
-	width: 40%;
-	height: 100%;
-	background: #ccc;
-	text-align: center;
-	display: table;
-}
-.progress-sort #contain_bubble {
-	display: table-cell;
-    vertical-align: middle;
-}
-
-.contain_left {
-	width: 60%;
-	height: 100%;
-	text-align: center;
-	/*left: 0;float: right;*/
-	background: #112435;
-	position: absolute;top: 0;right: 0;
-	display: table;
-}
-.contain_left .contain_text {
-	display: table-cell;/**/
-    vertical-align: middle;
-}
-
-.contain_left .contain_text div {
-	color: #7BC22F;
-	height: 300px;
-	overflow: hidden;
 }
 
 /* 导航按钮 */
@@ -128,7 +95,40 @@ body {
     transition-delay: 0.1s;
 }
 
-/* 按钮 */
+
+
+/* my css */
+.progress-sort {
+	width: 40%;
+	height: 100%;
+	background: #ccc;
+	text-align: center;
+	display: table;
+}
+.progress-sort #contain_bubble {
+	display: table-cell;
+    vertical-align: middle;
+}
+
+.contain_left {
+	width: 60%;
+	height: 100%;
+	text-align: center;
+	background: #112435;
+	position: absolute;top: 0;right: 0;left:40%;
+	display: table;
+}
+.contain_left .contain_text {
+	display: table-cell;/**/
+    vertical-align: middle;
+}
+
+.contain_left .contain_text div {
+	color: #7BC22F;
+	height: 300px;
+	overflow: hidden;
+}
+
 .start_btn {
 	height: 100%;
 	line-height: 21px;
