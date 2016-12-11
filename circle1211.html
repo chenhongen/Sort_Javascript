@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title> canvas circle </title>
+  <meta name="author" content="chenhongen" />
+ </head>
+ <style>
+
+ </style>
+ <body>
+  <button id="btn" onclick="sort()">papapa</button>
+  <canvas id="myCanvas" class="canvas " width="500" height="500">当前浏览器不支持canvas，请更换浏览器使用！</canvas>
+ </body>
+
+ <script>
+	var ctx = document.querySelector('#myCanvas').getContext('2d');
+		obj = { ctx: ctx,
+				x: 250,
+				y: 250,
+				r: 100,
+				sAngle: 0,
+				eAngle: 0,
+				counterclockwise: false,
+				color: ['#32CD32','#556B2F','#808000']
+		},
+		colorArr =[
+		['#33FFFF','#33FF99','#33FF00'],['#33FF33','#00CC33','#009933'],['#33CCCC','#006666','#003333'],['#00CCFF','#0033FF','#000099'],
+		['#9966CC','#660099','#660066'],['#FF00FF','#FF0000','#CC0000'],['#FF9966','#FF6600','#FF3300'],['#FFFFCC','#FFFF66','#FFFF00'],
+		['#CCFF66','#CCFF33','#99FF00'],['#99CC00','#99CC33','#99CC66']
+		],
+		numberArr = [28,12,20,10,30,5,15,40,21,19]; //  200/100=2
+
+
+	function draw(obj) {
+		obj.ctx.beginPath();
+		// context.arc(x,y,r,sAngle,eAngle,counterclockwise);
+		// sAngle:起始角，以弧度计；eAngle:结束角；counterclockwise：可选。规定应该逆时针还是顺时针绘图。False = 顺时针，true = 逆时针。
+		
+		var gradient = ctx.createRadialGradient(250, 250, 0, 250, 250, 200);
+		gradient.addColorStop("0", obj.color[0]);
+		gradient.addColorStop("0.5", obj.color[1]);
+		gradient.addColorStop("1.0", obj.color[2]);
+
+		obj.ctx.strokeStyle = gradient;
+		obj.ctx.lineWidth = 80;
+		obj.ctx.arc(obj.x, obj.y, obj.r, obj.sAngle * Math.PI, obj.eAngle * Math.PI); 
+		obj.ctx.stroke();
+	}
+
+	/*numberArr.forEach(function(value, key, array) {
+		obj.sAngle = obj.eAngle;
+		obj.eAngle = obj.sAngle + value/100;
+
+		obj.color[0] = colorArr[key][0];
+		obj.color[1] = colorArr[key][1];
+		obj.color[2] = colorArr[key][2];
+		draw(obj);
+	});
+
+	ctx.closePath();*/
+
+	function sort() {
+		swap(3, 4);
+	}
+
+	function swap(a, b) {
+		// 实际数交换
+		/*temp = numberArr[a];
+		numberArr[a] = numberArr[b];
+		numberArr[b] = temp;*/
+
+		var temp,
+			symbol = 1, // a > b 标识
+			difference = numberArr[a] - numberArr[b], // 差值计算，确定正负
+			diff_abs = Math.abs(difference),
+			sAngle = 0;
+
+		if(difference == 0) {
+			return;
+		} else if(difference < 0) {
+			symbol = -1;
+		}
+
+		// 起始角度:该元素之前元素求和
+		numberArr.forEach(function(value, key, array) {
+			if(key < a) {
+				sAngle += value;
+			}
+		});
+console.log(sAngle);
+
+		var intervalId = setInterval(function() {
+			if(0 < diff_abs) {
+				numberArr[a] -= symbol;
+				setDraw(a, sAngle/100, numberArr[a]);
+				numberArr[b] += symbol;
+				setDraw(b, (sAngle + numberArr[a])/100, numberArr[b]);
+				diff_abs--;
+			} else {
+				clearInterval(intervalId);
+			}
+		}, 500);
+	}
+
+	// index --> sAngle
+
+	function setDraw(key, sAngle, value) {
+		//ctx.clearRect(0, 0, 250, 250);
+		obj.sAngle = sAngle;
+		obj.eAngle = sAngle + value/100;
+
+		obj.color[0] = colorArr[key][0];
+		obj.color[1] = colorArr[key][1];
+		obj.color[2] = colorArr[key][2];
+
+		draw(obj);
+	}
+	
+	// 输出对象键值对
+	function po(obj){
+		var temp = "";
+		for(var i in obj){//用javascript的for/in循环遍历对象的属性
+			temp += i+":"+obj[i]+"\n";
+		}
+		alert(temp);
+	}
+	
+ </script>
+</html>
