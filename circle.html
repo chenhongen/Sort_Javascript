@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <style>
+			html,body {
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+
+            .circle_red {
+                width: 200px;
+                height: 200px;
+                /*border-radius: 50%;*/
+                background: red;
+            }
+
+            .circle_blue {
+                width: 100px;
+                height: 100px;
+				/*border-radius: 50%;*/
+				background: blue;
+				margin: auto;
+				/*position: relative;脱离文档流*/
+				 /*top: 50%; 偏移*/
+				 transform: translateY(50%);
+
+            }
+
+			.circle_yellow {
+				width: 50px;
+                height: 50px;
+				/*border-radius: 50%;*/
+				background: yellow;
+				margin: auto;
+				/*position: relative; 脱离文档流*/
+				/*top: 50%; 偏移*/
+				transform: translateY(50%);
+            }
+
+			.circle {
+				width: 200px;
+				height: 200px;
+				margin: auto;
+				position: relative;
+				border:1px solid #ddd;
+				transform: translateY(50%);
+			}
+
+			.wrapper {
+				width: 100px;
+				height: 200px;
+				position: absolute;
+				overflow: hidden;
+				
+			}
+			.right{
+				right:0;background:#ccd;
+			}
+			.left{
+				left:0;background:#123;
+			}
+			.circleProgress {
+				width: 160px;
+				height: 160px;
+				border:20px solid transparent;
+				border-radius: 50%;
+				position: absolute;
+				-webkit-transform: rotate(45deg);
+			}
+			.rightcircle{
+				border-top:20px solid green;
+				border-right:20px solid green;
+				right:0;
+				/*-webkit-animation: circleProgressLoad_right 5s linear infinite;*/
+			}
+			@-webkit-keyframes circleProgressLoad_right{
+				0%{
+					border-top:20px solid #ED1A1A;
+					border-right:20px solid #ED1A1A;
+					-webkit-transform: rotate(45deg);
+				}
+				50%{
+					border-top:20px solid rgb(232, 232, 12);
+					border-right:20px solid rgb(232, 232, 12);
+					border-left:20px solid rgb(81, 197, 81);
+					border-bottom:20px solid rgb(81, 197, 81);
+					-webkit-transform: rotate(225deg);
+				}
+				100%{
+					border-left:20px solid green;
+					border-bottom:20px solid green;
+					-webkit-transform: rotate(225deg);
+				}
+			}
+			.leftcircle{
+				border-bottom:20px solid green;
+				border-left:20px solid green;
+				left:0;
+				/*-webkit-animation: circleProgressLoad_left 5s linear infinite;*/
+			}
+			@-webkit-keyframes circleProgressLoad_left{
+				0%{
+					border-bottom:20px solid #ED1A1A;
+					border-left:20px solid #ED1A1A;
+					-webkit-transform: rotate(45deg);
+				}
+				50%{
+					border-bottom:20px solid rgb(232, 232, 12);
+					border-left:20px solid rgb(232, 232, 12);
+					border-top:20px solid rgb(81, 197, 81);
+					border-right:20px solid rgb(81, 197, 81);
+					-webkit-transform: rotate(45deg);
+				}
+				100%{
+					border-top:20px solid green;
+					border-right:20px solid green;
+					border-bottom:20px solid green;
+					border-left:20px solid green;
+					-webkit-transform: rotate(225deg);
+				}
+
+			}
+        </style>
+    </head>
+    <body>
+        <!--背景圆-->
+        <div class="circle">
+			<div class="wrapper right">
+				<div class="circleProgress rightcircle"></div>
+			</div>
+			<div class="wrapper left">
+				<div class="circleProgress leftcircle"></div>
+			</div>
+			
+        </div>
+        <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+        <script>
+			var percent = 45;
+			setInterval(function() {
+				$('.rightcircle').css("-webkit-transform","rotate("+percent+"deg)");
+				percent++;
+			}, 1000);
+        </script>
+    </body>
+</html>

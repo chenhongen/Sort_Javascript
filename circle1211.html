@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
  <head>
-  <title> canvas circle sort by che </title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title> canvas circle </title>
   <meta name="author" content="chenhongen" />
-  <link rel="stylesheet" type="text/css" href="css/style-circle.css">
  </head>
+ <style>
+
+ </style>
  <body>
-  <div class="container"><canvas id="myCanvas" class="canvas " width="300" height="300">当前浏览器不支持canvas，请更换浏览器使用！</canvas></div>
-  <button class="button button_border" data-button="blue" onclick="bubbleSort(0)">冒泡排序</button>
+  <button id="btn" onclick="sort()">papapa</button>
+  <canvas id="myCanvas" class="canvas " width="500" height="500">当前浏览器不支持canvas，请更换浏览器使用！</canvas>
  </body>
- <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
- <script type="text/javascript" src="js/circleSort.js"></script>
+
  <script>
 	var ctx = document.querySelector('#myCanvas').getContext('2d');
 		obj = { ctx: ctx,
-				x: 150,
-				y: 150,
+				x: 250,
+				y: 250,
 				r: 100,
 				sAngle: 0,
 				eAngle: 0,
@@ -28,11 +28,8 @@
 		['#9966CC','#660099','#660066'],['#FF00FF','#FF0000','#CC0000'],['#FF9966','#FF6600','#FF3300'],['#FFFFCC','#FFFF66','#FFFF00'],
 		['#CCFF66','#CCFF33','#99FF00'],['#99CC00','#99CC33','#99CC66']
 		],
-		numberArr = [28,12,20,10,30,5,15,40,21,19], //  200/100=2
-		len = numberArr.length;
+		numberArr = [28,12,20,10,30,5,15,40,21,19]; //  200/100=2
 
-	// 背景透明
-	ctx.globalAlpha = 0.8;
 
 	function draw(obj) {
 		obj.ctx.beginPath();
@@ -51,7 +48,7 @@
 	}
 
 	// 静态圆
-	numberArr.forEach(function(value, key, array) {
+	/*numberArr.forEach(function(value, key, array) {
 		obj.sAngle = obj.eAngle;
 		obj.eAngle = obj.sAngle + value/100;
 
@@ -61,14 +58,22 @@
 		draw(obj);
 	});
 
-	//ctx.closePath();
+	ctx.closePath();*/
 
 
 
 
 
-	
-	function swap(def, a, b) {
+	function sort() {
+		swap(3, 4);
+	}
+
+	function swap(a, b) {
+		// 实际数交换
+		/*temp = numberArr[a];
+		numberArr[a] = numberArr[b];
+		numberArr[b] = temp;*/
+
 		var temp,
 			symbol = 1, // a > b 标识
 			difference = numberArr[a] - numberArr[b], // 差值计算，确定正负
@@ -87,6 +92,7 @@
 				sAngle += value;
 			}
 		});
+console.log(sAngle);
 
 		var intervalId = setInterval(function() {
 			if(0 < diff_abs) {
@@ -97,9 +103,8 @@
 				diff_abs--;
 			} else {
 				clearInterval(intervalId);
-				def.resolve();
 			}
-		}, 200);
+		}, 500);
 	}
 
 	// index --> sAngle
@@ -115,11 +120,6 @@
 
 		draw(obj);
 	}
-
-
-
-
-
 	
 	// 输出对象键值对
 	function po(obj){
